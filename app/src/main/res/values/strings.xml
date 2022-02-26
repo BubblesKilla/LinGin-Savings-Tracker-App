@@ -5,7 +5,8 @@
     <string name="savings">Savings Account</string>
     <string name="cash">Cash</string>
     <string name="total">Total</string>
-    <string name="goal">Goal: $20,000</string>
+    <string name="goal">Goal:</string>
     <string name="goalAmount">$20,000</string>
     <string name="addString">+</string>
+    <string name="goalReached">You have reached your goal! ♥</string>
 </resources>
