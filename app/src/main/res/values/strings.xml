@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Savings Tracker</string>
+    <string name="title">Savings Tracker</string>
+    <string name="bank">Bank Account</string>
+    <string name="savings">Savings Account</string>
+    <string name="cash">Cash</string>
+    <string name="total">Total</string>
+    <string name="goal">Goal: $20,000</string>
+    <string name="goalAmount">$20,000</string>
+    <string name="addString">+</string>
+</resources>

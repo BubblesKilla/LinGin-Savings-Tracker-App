@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:foregroundTint="#000000"
+    android:rotation="-360"
+    android:rotationX="-360"
+    android:rotationY="-360"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/titleTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#0FFFFFFF"
+        android:fontFamily="@font/comfortaareg"
+        android:text="@string/title"
+        android:textColor="#FFA7FF"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.142"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.061" />
+
+    <TextView
+        android:id="@+id/bankTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#0FFFFFFF"
+        android:fontFamily="@font/comfortaareg"
+        android:text="@string/bank"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.203"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.293" />
+
+    <TextView
+        android:id="@+id/bankAmountTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#0FFFFFFF"
+        android:fontFamily="@font/comfortaareg"
+
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.786"
+        app:layout_constraintStart_toEndOf="@+id/bankTV"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.293" />
+
+    <TextView
+        android:id="@+id/totalTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#0FFFFFFF"
+        android:fontFamily="@font/comfortaareg"
+        android:text="@string/total"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.15"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.537" />
+
+    <TextView
+        android:id="@+id/totalAmountTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#0FFFFFFF"
+        android:fontFamily="@font/comfortaareg"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.86"
+        app:layout_constraintStart_toEndOf="@+id/totalTV"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.537" />
+
+    <TextView
+        android:id="@+id/cashTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#0FFFFFFF"
+        android:fontFamily="@font/comfortaareg"
+        android:text="@string/cash"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.15"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.456" />
+
+    <TextView
+        android:id="@+id/cashAmountTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#0FFFFFFF"
+        android:fontFamily="@font/comfortaareg"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.859"
+        app:layout_constraintStart_toEndOf="@+id/cashTV"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.456" />
+
+    <TextView
+        android:id="@+id/savingsTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#0FFFFFFF"
+        android:fontFamily="@font/comfortaareg"
+        android:text="@string/savings"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.228"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.374" />
+
+    <TextView
+        android:id="@+id/savingsAmountTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#0FFFFFFF"
+        android:fontFamily="@font/comfortaareg"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.744"
+        app:layout_constraintStart_toEndOf="@+id/savingsTV"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.374" />
+
+    <TextView
+        android:id="@+id/goalTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#0FFFFFFF"
+        android:fontFamily="@font/comfortaareg"
+        android:text="@string/goal"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.192"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.752"
+        tools:text="Goal:" />
+
+    <TextView
+        android:id="@+id/goalAmountTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#0FFFFFFF"
+        android:fontFamily="@font/comfortaareg"
+        android:text="@string/goalAmount"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.221"
+        app:layout_constraintStart_toEndOf="@+id/goalTV"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.752" />
+
+    <Button
+        android:id="@+id/cashButton"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="51dp"
+        android:layout_height="57dp"
+        android:backgroundTint="#FFFFFF"
+        android:fontFamily="@font/comfortaareg"
+        android:text="@string/addString"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="#FFA7FF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/cashTV"
+        app:layout_constraintHorizontal_bias="0.053"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.452" />
+
+    <Button
+        android:id="@+id/savingsButton"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="51dp"
+        android:layout_height="57dp"
+        android:backgroundTint="#FFFFFF"
+        android:fontFamily="@font/comfortaareg"
+        android:text="o"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="#FFA7FF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/savingsTV"
+        app:layout_constraintHorizontal_bias="0.016"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.367" />
+
+    <Button
+        android:id="@+id/bankButton"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="51dp"
+        android:layout_height="57dp"
+        android:backgroundTint="#FFFFFF"
+        android:fontFamily="@font/comfortaareg"
+        android:text="o"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="#FFA7FF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/bankTV"
+        app:layout_constraintHorizontal_bias="0.02"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.283" />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
