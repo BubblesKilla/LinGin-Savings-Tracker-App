@@ -8,109 +8,49 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.google.android.material.snackbar.Snackbar;
+
+import java.text.NumberFormat;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
-////////////////////////////// EACH VALUE HAS A FLOAT //////////////////////////////
-    public static float goalFloat;
-    public static float bankFloat;
-    public static float savingsFloat;
-    public static float cashFloat;
-    public static float totalFloat; // true total
-    public static float displayFloat; // total - cash (for display purposes)
-////////////////////////////// EACH VALUE HAS A STRING //////////////////////////////
-    public static String goalString;
-    public static String bankString;
-    public static String savingsString;
-    public static String cashString;
-    public static String displayString;
-    public static String totalString;
 ///////////////////////////// EACH VALUE HAS A TEXTVIEW /////////////////////////////
     public TextView tVbank;
     public TextView tVsavings;
     public TextView tVdisplayTotal;
     public TextView tVcash;
-    public TextView tVtotal;
     public TextView tVgoal;
     public TextView tVgoalAmount;
     public TextView tVgoalReached;
+//////////////////////////////// DATABASE VARIABLES //////////////////////////////////
+    public DBServices dbServices;
+    public Account account;
+//////////////////////////////////// FORMATTER ///////////////////////////////////////
+    private final NumberFormat CURRENCY_FORMAT = NumberFormat.getCurrencyInstance(Locale.CANADA);
+
 //////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////// GETTERS FOR THE TOTALS ///////////////////////////////
-
-    float getTotalFloat () {
-        return bankFloat + savingsFloat + cashFloat;}
-
-    float getDisplayFloat () {
-        return getTotalFloat() - cashFloat;}
-
 
 //////// THESE UPDATE THE STRINGS EVERY TIME THE VALUE OF THE FLOATS CHANGE ////////
 
-    void updateBankString() {
-        bankString = Float.toString(bankFloat);
-        if (bankString.contains(".")) {
-            int dec = bankString.indexOf(".");
-            String sub = bankString.substring(0, dec);
-            String tempSub = bankString.substring(dec);
-            String sub2;
-            if (tempSub.length() > 2) sub2 = bankString.substring(dec, dec + 3);
-            else sub2 = tempSub;
-            bankString = sub + sub2;}
-        tVbank.setText(bankString);}
+    void updateBankString() { tVbank.setText(CURRENCY_FORMAT.format(account.get_bankAmount())); }
 
-    void updateSavingsString() {
-        savingsString = Float.toString(savingsFloat);
-        if (savingsString.contains(".")) {
-            int dec = savingsString.indexOf(".");
-            String sub = savingsString.substring(0, dec);
-            String tempSub = savingsString.substring(dec);
-            String sub2;
-            if (tempSub.length() > 2) sub2 = savingsString.substring(dec, dec + 3);
-            else sub2 = tempSub;
-            savingsString = sub + sub2;}
-        tVsavings.setText(savingsString);}
+    void updateSavingsString() { tVsavings.setText(CURRENCY_FORMAT.format(account.get_savingAmount())); }
 
     void updateCashString() {
-        cashString = Float.toString(cashFloat);
-        if (cashString.contains(".")) {
-            int dec = cashString.indexOf(".");
-            String sub = cashString.substring(0, dec);
-            String tempSub = cashString.substring(dec);
-            String sub2;
-            if (tempSub.length() > 2) sub2 = cashString.substring(dec, dec + 3);
-            else sub2 = tempSub;
-            cashString = sub + sub2;}
-        if (totalFloat >= goalFloat) tVcash.setText(cashString);}
+        if (account.get_totalSaved() >= account.get_goal()) tVcash.setText(CURRENCY_FORMAT.format(account.get_cashAmount()));
+    }
 
     void updateTotalString() {
-        totalFloat = getTotalFloat();
-        updateDisplayString();
-        totalString = Float.toString(totalFloat);
-        if (totalString.contains(".")) {
-            int dec = totalString.indexOf(".");
-            String sub = totalString.substring(0, dec);
-            String tempSub = totalString.substring(dec);
-            String sub2;
-            if (tempSub.length() > 2) sub2 = totalString.substring(dec, dec + 3);
-            else sub2 = tempSub;
-            totalString = sub + sub2;}
-        if (totalFloat >= goalFloat) {
-            tVtotal.setText(totalString);
-            whenReachedGoal();}}
-
-    void updateDisplayString() {
-        displayFloat = getDisplayFloat();
-        displayString = Float.toString(displayFloat);
-        if (displayString.contains(".")) {
-            int dec = displayString.indexOf(".");
-            String sub = displayString.substring(0, dec);
-            String tempSub = displayString.substring(dec);
-            String sub2;
-            if (tempSub.length() > 2) sub2 = displayString.substring(dec, dec + 3);
-            else sub2 = tempSub;
-            displayString = sub + sub2;}
-        if (totalFloat < goalFloat) tVdisplayTotal.setText(displayString);}
+        if (account.get_totalSaved() >= account.get_goal()) {
+            tVdisplayTotal.setText(CURRENCY_FORMAT.format(account.get_totalSaved()));
+            whenReachedGoal();}
+        else{
+            tVdisplayTotal.setText(CURRENCY_FORMAT.format(account.get_displayAmount()));
+        }
+    }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
@@ -131,18 +71,15 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-
-
-    @SuppressLint("CutPasteId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
         tVbank = findViewById(R.id.bankAmountTV);
         tVsavings = findViewById(R.id.savingsAmountTV);
         tVdisplayTotal = findViewById(R.id.totalAmountTV);
         tVcash = findViewById(R.id.cashAmountTV);
-        tVtotal = findViewById(R.id.totalAmountTV);
         tVgoal = findViewById(R.id.goalTV);
         tVgoalAmount = findViewById(R.id.goalAmountTV);
         tVgoalReached = findViewById(R.id.goalReachedTV);
@@ -152,32 +89,88 @@ public class MainActivity extends AppCompatActivity {
         // TODO create some sort of boolean that gets checked onCreate to see if goal reached
         // not needed ASAP
 
-        goalFloat = 20000;
-        goalString = getString(R.string.goalAmount); // "$20,000"
+        /**
+        * Database initializations
+        */
+        dbServices = new DBServices(this);
+        if(dbServices.getMainAccount().getCount() == 0){
+            // Initialize account
+            initGoalAlert("Set a Goal!!");
+        }else{
+            account = new Account(dbServices.getMainAccount());
+            initDisplay();
+        }
+        findViewById(R.id.cashButton).setOnClickListener(new HandleClick());
+        findViewById(R.id.bankButton).setOnClickListener(new HandleClick());
+        findViewById(R.id.savingsButton).setOnClickListener(new HandleClick());
+    }
 
-        if (getTotalFloat() < goalFloat) tVgoalReached.setVisibility(View.INVISIBLE);
+    @Override
+    protected void onPause() {
+        // Save account to database
+        super.onPause();
+        dbServices.updateAccount(account);
+    }
+
+    private void initGoalAlert(String title){
+        EditText userInput = new EditText(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(title)
+                .setView(userInput)
+                .setCancelable(false)
+                .setNeutralButton("Enter", (dialog, id)->{
+                    String in = userInput.getText().toString();
+                    if(!isFloat(in)) {
+                        initGoalAlert("Please input a number as your goal!");
+                    }else{
+                        float goal = Math.round(Float.parseFloat(in)*100.0f)/100.0f;
+                        dbServices.insertInitialAccount(goal);
+                        account = new Account(dbServices.getMainAccount());
+                        initDisplay();
+                    }
+                }).show();
+    }
+
+    private void initDisplay(){
+        if (account.get_totalSaved() < account.get_goal()) {
+            tVgoalReached.setVisibility(View.INVISIBLE);
+            tVgoalAmount.setText(CURRENCY_FORMAT.format(account.get_goal()));
+        }
         else {
             tVgoal.setVisibility(View.INVISIBLE);
             tVgoalAmount.setVisibility(View.INVISIBLE);}
-
         /**
          * if we ask them for their new amount,
          * they input like 20000 (INT NOT FLOAT FOR THE INPUT)
          * and we figure out where the comma would need to go for goal string
          */
-
-
         updateCashString();
         updateBankString();
         updateSavingsString();
-        updateDisplayString();
+        updateTotalString();
+    }
 
-        findViewById(R.id.cashButton).setOnClickListener(new HandleClick());
-        findViewById(R.id.bankButton).setOnClickListener(new HandleClick());
-        findViewById(R.id.savingsButton).setOnClickListener(new HandleClick());}
+    private boolean isFloat(String in){
+        boolean isFloat;
+        try{
+            Float.parseFloat(in);
+            isFloat = true;
+        }catch (Exception e){
+            isFloat = false;
+        }
+        return isFloat;
+    }
+
+    public void printAccount(View view) {
+        Toast.makeText(this,dbServices.toStringTransaction(),Toast.LENGTH_LONG).show();
+    }
 
     private class HandleClick implements View.OnClickListener {
-
+        private void umNotANumber(){
+            Snackbar.make(getWindow().getDecorView().getRootView(),"um? thats not a number...",
+                    Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
+        }
         @SuppressLint("NonConstantResourceId")
         public void onClick(View arg0) {
 
@@ -186,71 +179,65 @@ public class MainActivity extends AppCompatActivity {
 
             switch (arg0.getId()) {
                 case R.id.cashButton:
-
-                    builder.setTitle("Add Cash (Please only enter numbers)");
-
-                    builder.setView(userInput);
-                    // set dialog message
-                    builder.setCancelable(false).setPositiveButton("OK", (dialog, id) -> {
-                        String uIn = userInput.getText().toString();
-                        try {
-                            float uCash = Float.parseFloat(uIn);
-                            cashFloat += uCash;
-                            totalFloat = getTotalFloat();
-                            updateCashString();
-                            updateTotalString();
-                            Snackbar.make(getWindow().getDecorView().getRootView(),
-                                    "$" + uIn + " added to total! ♥", Snackbar.LENGTH_LONG)
-                                    .setAction("Action", null).show();
-                        } catch (NumberFormatException e) {
-                            Snackbar.make(getWindow().getDecorView().getRootView(),"um? thats not a number...",
-                                    Snackbar.LENGTH_LONG)
-                                    .setAction("Action", null).show();}})
-                            .setNegativeButton("Cancel", (dialog, id) -> dialog.cancel());
+                    builder.setTitle("Add Cash (Please only enter numbers)")
+                            .setView(userInput)
+                            .setCancelable(false)
+                            .setPositiveButton("OK", (dialog, id) -> {
+                                String uIn = userInput.getText().toString();
+                                if (isFloat(uIn)) {
+                                    float added = account.add_cashAmount(Float.parseFloat(uIn));
+                                    updateCashString();
+                                    updateTotalString();
+                                    Snackbar.make(getWindow().getDecorView().getRootView(),
+                                            CURRENCY_FORMAT.format(added) + " added to total! ♥", Snackbar.LENGTH_LONG)
+                                            .setAction("Action", null).show();
+                                    // Transaction Part
+                                    dbServices.insertTransaction(account.get_id(),added);
+                                } else {
+                                    umNotANumber();
+                                }
+                            }).setNegativeButton("Cancel", (dialog, id) -> dialog.cancel());
                 break;
 
             case R.id.bankButton:
-                builder.setTitle("Edit Checking Account (Please only enter numbers)");
-
-                builder.setView(userInput);
-                // set dialog message
-                builder.setCancelable(false).setPositiveButton("OK", (dialog, id) -> {
-                    String uIn = userInput.getText().toString();
-                    try {
-                        bankFloat = Float.parseFloat(uIn);
-                        totalFloat = getTotalFloat();
-                        updateBankString();
-                        updateTotalString();
-                        Snackbar.make(getWindow().getDecorView().getRootView(),
-                                "Checking Account set to $" + bankString + ".", Snackbar.LENGTH_LONG)
-                                .setAction("Action", null).show();
-                    } catch (NumberFormatException e) {
-                        Snackbar.make(getWindow().getDecorView().getRootView(),"um? thats not a number...",
-                                Snackbar.LENGTH_LONG)
-                                .setAction("Action", null).show();}})
-                        .setNegativeButton("Cancel", (dialog, id) -> dialog.cancel());
+                builder.setTitle("Edit Checking Account (Please only enter numbers)")
+                        .setView(userInput)
+                        .setCancelable(false)
+                        .setPositiveButton("OK", (dialog, id) -> {
+                            String uIn = userInput.getText().toString();
+                            if (isFloat(uIn)) {
+                                account.set_bankAmount(Float.parseFloat(uIn));
+                                updateBankString();
+                                updateTotalString();
+                                Snackbar.make(getWindow().getDecorView().getRootView(),
+                                        "Checking Account set to " + CURRENCY_FORMAT.format(account.get_bankAmount())
+                                                + ".", Snackbar.LENGTH_LONG)
+                                        .setAction("Action", null).show();
+                            } else {
+                                umNotANumber();
+                            }
+                        }).setNegativeButton("Cancel", (dialog, id) -> dialog.cancel());
                 break;
 
             case R.id.savingsButton:
-                builder.setTitle("Edit Savings Account (Please only enter numbers)");
-
-                builder.setView(userInput);
-                // set dialog message
-                builder.setCancelable(false).setPositiveButton("OK", (dialog, id) -> {
-                    String uIn = userInput.getText().toString();
-                    try {
-                        savingsFloat = Float.parseFloat(uIn);
-                        totalFloat = getTotalFloat();
-                        updateSavingsString();
-                        updateTotalString();
-                        Snackbar.make(getWindow().getDecorView().getRootView(),
-                                "Savings Account set to $" + savingsString + ".", Snackbar.LENGTH_LONG)
-                                .setAction("Action", null).show();
-                    } catch (NumberFormatException e) {
-                        Snackbar.make(getWindow().getDecorView().getRootView(),"um? thats not a number...",
-                                Snackbar.LENGTH_LONG)
-                                .setAction("Action", null).show();}})
-                        .setNegativeButton("Cancel", (dialog, id) -> dialog.cancel());
+                builder.setTitle("Edit Savings Account (Please only enter numbers)")
+                        .setView(userInput)
+                        .setCancelable(false)
+                        .setPositiveButton("OK", (dialog, id) -> {
+                            String uIn = userInput.getText().toString();
+                            if (isFloat(uIn)) {
+                                account.set_savingAmount(Float.parseFloat(uIn));
+                                updateSavingsString();
+                                updateTotalString();
+                                Snackbar.make(getWindow().getDecorView().getRootView(),
+                                        "Savings Account set to " +
+                                                CURRENCY_FORMAT.format(account.get_savingAmount()) +
+                                                ".", Snackbar.LENGTH_LONG)
+                                        .setAction("Action", null).show();
+                            } else {
+                                umNotANumber();
+                            }
+                }).setNegativeButton("Cancel", (dialog, id) -> dialog.cancel());
                 break;}
             AlertDialog alertDialog = builder.create();
             alertDialog.show();}}}
